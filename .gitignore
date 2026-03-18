@@ -1,0 +1,34 @@
+# ── Python cache ────────────────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+
+# ── Outputs generados por el AG (se crean al correr los scripts) ─────────────
+*.json
+*.png
+
+# ── Entornos virtuales ───────────────────────────────────────────────────────
+.venv/
+venv/
+env/
+.env
+
+# ── macOS ────────────────────────────────────────────────────────────────────
+.DS_Store
+.AppleDouble
+
+# ── Credenciales (NUNCA subir) ───────────────────────────────────────────────
+kaggle.json
+.kaggle/
+*_api_key*
+*.token
+
+# ── Jupyter checkpoints ──────────────────────────────────────────────────────
+.ipynb_checkpoints/
+
+# ── IDEs ─────────────────────────────────────────────────────────────────────
+.vscode/
+.idea/
+*.swp
