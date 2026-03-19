@@ -9,6 +9,7 @@ __pycache__/
 *.json
 *.png
 *.pdf
+exportar_codigo_pdf.py
 
 # ── Entornos virtuales ───────────────────────────────────────────────────────
 .venv/
