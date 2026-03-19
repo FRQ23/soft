@@ -43,7 +43,7 @@ def onehot_encode(Y,num_clases:int):
     return ye
 
 def matriz_confusion(y,yh,CLASES:int):
-    m = np.zeros((CLASES,CLASES),dtype=np.int8)
+    m = np.zeros((CLASES,CLASES),dtype=np.int32)
     yc = np.argmax(y,axis=1)
     yhc = np.argmax(yh,axis=1)
     for t,p in zip(yc,yhc):

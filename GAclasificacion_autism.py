@@ -74,7 +74,7 @@ if __name__ == "__main__":
 
     # Codificar categorías con LabelEncoder
     le = LabelEncoder()
-    for col in X_df.select_dtypes(include="object").columns:
+    for col in X_df.select_dtypes(include="str").columns:
         X_df[col] = le.fit_transform(X_df[col].astype(str))
 
     X_raw = X_df.values.astype(float)
@@ -95,39 +95,7 @@ if __name__ == "__main__":
 
     print(f"  Entrenamiento: {X_TRAIN.shape[0]}  |  Prueba: {X_TEST.shape[0]}")
 
-    # ── 3. Pairplot exploratorio ─────────────────────────────────────────────
-    print("\nGenerando pairplot …")
-
-    # Usar scores A1-A10 + result para visualizar separación de clases
-    plot_cols = [f"A{i}_Score" for i in range(1, 6)] + ["result", "age"]
-    plot_cols  = [c for c in plot_cols if c in df.columns]
-
-    df_plot = df[plot_cols + ["Class/ASD"]].copy()
-    for col in df_plot.select_dtypes(include="object").columns:
-        if col != "Class/ASD":
-            df_plot[col] = le.fit_transform(df_plot[col].astype(str))
-    df_plot[plot_cols] = df_plot[plot_cols].apply(pd.to_numeric, errors="coerce")
-
-    sns.set_theme(style="ticks")
-    grid = sns.pairplot(
-        df_plot,
-        hue="Class/ASD",
-        palette={"NO": "#3498db", "YES": "#e74c3c"},
-        diag_kind="kde",
-        plot_kws={"alpha": 0.55, "s": 25},
-        height=2.2,
-    )
-    grid.figure.suptitle(
-        "Autism Screening — Distribución de Features por Clase (ASD: YES / NO)",
-        y=1.02, fontsize=12, fontweight="bold",
-    )
-    plt.tight_layout()
-    grid.figure.savefig("autism_pairplot.png", dpi=120, bbox_inches="tight")
-    print("  Pairplot guardado: autism_pairplot.png")
-    plt.show()
-    sns.reset_defaults()
-
-    # ── 4. Configuración del AG ──────────────────────────────────────────────
+    # ── 3. Configuración del AG ──────────────────────────────────────────────
     ATRIBUTOS       = X_TRAIN.shape[1]
     CARACTERISTICAS = ATRIBUTOS * CLASES + CLASES   # W(n×2) + b(2)
 
@@ -205,4 +173,35 @@ if __name__ == "__main__":
     plt.tight_layout()
     plt.savefig("autism_confusion_matrix.png", dpi=150, bbox_inches="tight")
     print("  Matriz guardada: autism_confusion_matrix.png")
+
+    # ── 8. Pairplot exploratorio ─────────────────────────────────────────────
+    print("\nGenerando pairplot …")
+
+    plot_cols = [f"A{i}_Score" for i in range(1, 6)] + ["result", "age"]
+    plot_cols  = [c for c in plot_cols if c in df.columns]
+
+    df_plot = df[plot_cols + ["Class/ASD"]].copy()
+    for col in df_plot.select_dtypes(include="str").columns:
+        if col != "Class/ASD":
+            df_plot[col] = le.fit_transform(df_plot[col].astype(str))
+    df_plot[plot_cols] = df_plot[plot_cols].apply(pd.to_numeric, errors="coerce")
+
+    sns.set_theme(style="ticks")
+    grid = sns.pairplot(
+        df_plot,
+        hue="Class/ASD",
+        palette={"NO": "#3498db", "YES": "#e74c3c"},
+        diag_kind="kde",
+        plot_kws={"alpha": 0.55, "s": 25},
+        height=2.2,
+    )
+    grid.figure.suptitle(
+        "Autism Screening — Distribución de Features por Clase (ASD: YES / NO)",
+        y=1.02, fontsize=12, fontweight="bold",
+    )
+    plt.tight_layout()
+    grid.figure.savefig("autism_pairplot.png", dpi=120, bbox_inches="tight")
+    print("  Pairplot guardado: autism_pairplot.png")
+    sns.reset_defaults()
+
     plt.show()

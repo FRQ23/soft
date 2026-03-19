@@ -144,29 +144,7 @@ if __name__ == "__main__":
 
     variables = {"X_TRAIN": X_TRAIN_PCA, "Y_TRAIN": y_train}
 
-    # ── 4. Pairplot de las 3 primeras componentes principales ───────────────
-    print("\nGenerando pairplot (primeras 3 componentes PCA) …")
-    import pandas as pd
-    df_pca = pd.DataFrame(X_TRAIN_PCA[:2000, :3],
-                          columns=["PC1", "PC2", "PC3"])
-    df_pca["digito"] = Y_TRAIN_INT[:2000].astype(str)
-
-    sns.set_theme(style="ticks")
-    grid = sns.pairplot(df_pca, hue="digito", palette="tab10",
-                        diag_kind="kde", plot_kws={"alpha": 0.3, "s": 10},
-                        height=2.5)
-    grid.figure.suptitle(
-        f"MNIST — Primeras 3 componentes PCA  "
-        f"(varianza acumulada: {varianza_acum:.1f}%)",
-        y=1.02, fontsize=12, fontweight="bold",
-    )
-    plt.tight_layout()
-    grid.figure.savefig("mnist_pairplot_pca.png", dpi=120, bbox_inches="tight")
-    print("  Pairplot guardado: mnist_pairplot_pca.png")
-    plt.show()
-    sns.reset_defaults()
-
-    # ── 5. Configuración del AG ──────────────────────────────────────────────
+    # ── 4. Configuración del AG ──────────────────────────────────────────────
     ATRIBUTOS       = N_COMPONENTES         # 50
     CARACTERISTICAS = ATRIBUTOS * CLASES + CLASES   # 510  (vs 7,850 sin PCA)
     BATCH_SIZE      = 1000
@@ -244,3 +222,26 @@ if __name__ == "__main__":
 
     # ── 9. Ejemplos mal clasificados ─────────────────────────────────────────
     mostrar_errores(X_TEST_RAW, y_test, yh, n=10)
+
+    # ── 10. Pairplot de las 3 primeras componentes principales ───────────────
+    print("\nGenerando pairplot (primeras 3 componentes PCA) …")
+    import pandas as pd
+    df_pca = pd.DataFrame(X_TRAIN_PCA[:2000, :3],
+                          columns=["PC1", "PC2", "PC3"])
+    df_pca["digito"] = Y_TRAIN_INT[:2000].astype(str)
+
+    sns.set_theme(style="ticks")
+    grid = sns.pairplot(df_pca, hue="digito", palette="tab10",
+                        diag_kind="kde", plot_kws={"alpha": 0.3, "s": 10},
+                        height=2.5)
+    grid.figure.suptitle(
+        f"MNIST — Primeras 3 componentes PCA  "
+        f"(varianza acumulada: {varianza_acum:.1f}%)",
+        y=1.02, fontsize=12, fontweight="bold",
+    )
+    plt.tight_layout()
+    grid.figure.savefig("mnist_pairplot_pca.png", dpi=120, bbox_inches="tight")
+    print("  Pairplot guardado: mnist_pairplot_pca.png")
+    sns.reset_defaults()
+
+    plt.show()

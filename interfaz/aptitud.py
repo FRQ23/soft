@@ -5,6 +5,15 @@ from CromosomaBin import CromosomaBinario
 from CromosomaBin import CromosomaBinRes
 from interfaz.regresion_classi import regresion_cromosoma, entropia_cruzada, accuracy, onehot_encode
 import numpy as np
+from joblib import Parallel, delayed
+
+
+def _eval_mnist_uno(cromosoma, X_tr, Y_tr, caracteristicas, clases, objetivo):
+    YH = regresion_cromosoma(cromosoma, X_tr, caracteristicas, clases)
+    loss = entropia_cruzada(YH, Y_tr)
+    acc = accuracy(YH, Y_tr)
+    return loss if objetivo == "minimizar" else acc
+
 
 class Aptitud(ABC):
     @abstractmethod
@@ -42,9 +51,12 @@ class AptitudMNIST(Aptitud):
         self.caracteristicas = pixeles
         self.clases = clases
         self.objetivo = objetivo
+
     def evaluar_poblacion(self, poblacion:List[CromosomaBinRes], var:Dict):
-        for cromosoma in poblacion:
-            YH = regresion_cromosoma(cromosoma, var["X_TRAIN"], self.caracteristicas, self.clases)
-            loss = entropia_cruzada(YH, var["Y_TRAIN"])
-            acc = accuracy(YH, var["Y_TRAIN"])
-            cromosoma.score = loss if self.objetivo == "minimizar" else acc
+        X_tr, Y_tr = var["X_TRAIN"], var["Y_TRAIN"]
+        scores = Parallel(n_jobs=-1, prefer="threads")(
+            delayed(_eval_mnist_uno)(c, X_tr, Y_tr, self.caracteristicas, self.clases, self.objetivo)
+            for c in poblacion
+        )
+        for c, s in zip(poblacion, scores):
+            c.score = s
