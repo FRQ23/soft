@@ -8,6 +8,7 @@ __pycache__/
 # ── Outputs generados por el AG (se crean al correr los scripts) ─────────────
 *.json
 *.png
+*.pdf
 
 # ── Entornos virtuales ───────────────────────────────────────────────────────
 .venv/
